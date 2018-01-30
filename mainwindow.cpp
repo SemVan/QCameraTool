@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     tool = new CameraTool();
     tool->startCamera();
-    QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(timeOutHandler()));
 
     initGrapicsOnWindow();
 }
@@ -23,12 +22,11 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::initGrapicsOnWindow() {
-    ui->horizontalSlider->setMaximum(-1);
-    ui->horizontalSlider->setMinimum(-15);
+    ui->horizontalSlider->setMaximum(255);
+    ui->horizontalSlider->setMinimum(0);
     QObject::connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-    ui->horizontalSlider->setValue(-1);
-    tool->setExposure(-1);
-    scene = new QGraphicsScene();
+    ui->horizontalSlider->setValue(-6);
+    tool->setExposure(-6);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -47,34 +45,8 @@ void MainWindow::on_pushButton_clicked()
 }
 
 
-void MainWindow::showImage() {
-    img = QPixmap::fromImage(imageToShow);
-    QRectF sceneRect = ui->graphicsView->sceneRect();
-    img.scaledToHeight(sceneRect.height());
-    img.scaledToWidth(sceneRect.width());
-    scene->addPixmap(img);
-    //scene->setSceneRect(img.rect());
-    ui->graphicsView->setScene(scene);
-    ui->graphicsView->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
-
-
-}
-
-
 void MainWindow::sliderValueChanged(int value) {
     ui->label->setText(QString::number(value));
     tool->setExposure((double)value);
 }
 
-
-void MainWindow::timeOutHandler() {
-    showImage();
-}
-
-
-void MainWindow::saveImage(QImage image) {
-
-    imageToShow = image;
-    qDebug()<<"image saved";
-    timer.start(10);
-}

@@ -15,18 +15,20 @@ class CameraTool : public QObject
     Q_OBJECT
 public:
     explicit CameraTool(QObject *parent = 0);
-    QImage getImage(double exposure);
+
     void getImage();
     void convertMatToImage(cv::Mat &frame);
     void startCamera();
-    QImage image;
     void setExposure(double exposure);
+
+
 
 private:
     cv::VideoCapture cam;
     cv::Mat img;
     QTimer *timer;
     QElapsedTimer elTimer;
+    QImage image;
 
 signals:
     void sendImage(QImage &image);

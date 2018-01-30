@@ -21,6 +21,7 @@ void displayer::showImage(QImage &imageToShow) {
 
     img = QPixmap::fromImage(imageToShow);
     shower();
+    qDebug()<<"image shown";
     timer.start();
 
 

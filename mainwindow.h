@@ -22,18 +22,14 @@ public:
 
 private slots:
     void on_pushButton_clicked();
-    void showImage();
     void sliderValueChanged(int value);
-    void timeOutHandler();
-    void saveImage(QImage image);
+
+
 
 private:
     Ui::MainWindow *ui;
     CameraTool *tool;
-    QGraphicsScene *scene;
-    QTimer timer;
-    QPixmap img;
-    QImage imageToShow;
+
     QThread *cameraThread;
     QThread *dispThread;
     displayer *disp;

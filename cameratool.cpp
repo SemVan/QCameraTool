@@ -16,6 +16,9 @@ void CameraTool::startCamera() {
     cam.set(CV_CAP_PROP_AUTO_EXPOSURE, 0.0);
     cam.set(CV_CAP_PROP_EXPOSURE, -6.0);
     cam.set(CV_CAP_PROP_FPS, 60);
+
+    qDebug()<<cam.get(CV_CAP_PROP_BRIGHTNESS)<<"buffer size";
+
 }
 
 void CameraTool::convertMatToImage(cv::Mat &frame) {
@@ -26,11 +29,6 @@ void CameraTool::convertMatToImage(cv::Mat &frame) {
 
 }
 
-QImage CameraTool::getImage(double exposure) {
-    cam.read(img);
-    cam.read(img);
-    convertMatToImage(img);
-}
 
 void CameraTool::getImage() {
     cam.read(img);
@@ -39,15 +37,18 @@ void CameraTool::getImage() {
 }
 
 void CameraTool::setExposure(double exposure) {
-    cam.set(CV_CAP_PROP_EXPOSURE, exposure);
+    //cam.set(CV_CAP_PROP_EXPOSURE, exposure);
+    cam.set(CV_CAP_PROP_BRIGHTNESS, exposure);
 }
 
 void CameraTool::timeOutHandler() {
     qDebug()<<"getting image";
+    qDebug()<<elTimer.nsecsElapsed()<<"between captures";
     elTimer.start();
     getImage();
     qDebug()<<"image grabbed"<<elTimer.elapsed();
-    elTimer.restart();
+    //elTimer.restart();
+
     sendImage(image);
 
 }
@@ -55,7 +56,9 @@ void CameraTool::timeOutHandler() {
 void CameraTool::initTimer() {
     timer = new QTimer();
     QObject::connect(timer,SIGNAL(timeout()), this, SLOT(timeOutHandler()));
-    timer->setInterval(10);
+    timer->setInterval(30);
+    timer->setSingleShot(false);
+    timer->setTimerType(Qt::PreciseTimer);
     timer->start();
 }
 
