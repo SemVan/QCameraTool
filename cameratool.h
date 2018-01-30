@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QImage>
+#include <QElapsedTimer>
 #include <QTimer>
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -16,23 +17,25 @@ public:
     explicit CameraTool(QObject *parent = 0);
     QImage getImage(double exposure);
     void getImage();
-    void convertMatToImage(cv::Mat frame);
+    void convertMatToImage(cv::Mat &frame);
     void startCamera();
     QImage image;
     void setExposure(double exposure);
-    void initTimer();
+
 private:
     cv::VideoCapture cam;
     cv::Mat img;
-    QTimer timer;
+    QTimer *timer;
+    QElapsedTimer elTimer;
 
 signals:
-    void sendImage(QImage image);
+    void sendImage(QImage &image);
 
 private slots:
     void timeOutHandler();
 
 public slots:
+    void initTimer();
 };
 
 #endif // CAMERATOOL_H

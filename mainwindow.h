@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <QGraphicsScene>
 #include <cameratool.h>
+#include <displayer.h>
+
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +34,9 @@ private:
     QTimer timer;
     QPixmap img;
     QImage imageToShow;
+    QThread *cameraThread;
+    QThread *dispThread;
+    displayer *disp;
 
     void initGrapicsOnWindow();
 };

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     tool = new CameraTool();
     tool->startCamera();
-    QObject::connect(tool, SIGNAL(sendImage(QImage)), this, SLOT(saveImage(QImage)));
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(timeOutHandler()));
 
     initGrapicsOnWindow();
@@ -33,20 +33,21 @@ void MainWindow::initGrapicsOnWindow() {
 
 void MainWindow::on_pushButton_clicked()
 {
+      cameraThread = new QThread();
+      dispThread = new QThread();
+      disp = new displayer();
+      disp->init(ui->graphicsView);
 
-//    tool->getImage((double)ui->horizontalSlider->value());
-//    showImage();
-      tool->initTimer();
+      QObject::connect(cameraThread, SIGNAL(started()), tool, SLOT(initTimer()));
+      QObject::connect(tool, SIGNAL(sendImage(QImage&)),disp,SLOT(showImage(QImage&)), Qt::BlockingQueuedConnection);
 
-//    timer.setInterval(1000);
-//    timer.setTimerType(Qt::PreciseTimer);
-//    timer.setSingleShot(true);
-//    timer.start();
+      tool->moveToThread(cameraThread);
+      cameraThread->start();
+
 }
 
 
 void MainWindow::showImage() {
-    qDebug()<<"showing image";
     img = QPixmap::fromImage(imageToShow);
     QRectF sceneRect = ui->graphicsView->sceneRect();
     img.scaledToHeight(sceneRect.height());
