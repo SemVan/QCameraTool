@@ -17,14 +17,8 @@ void displayer::init(QGraphicsView *v) {
 
 
 void displayer::showImage(QImage &imageToShow) {
-    qDebug()<<"showing image"<<timer.elapsed();
-
     img = QPixmap::fromImage(imageToShow);
     shower();
-    qDebug()<<"image shown";
-    timer.start();
-
-
 }
 
 void displayer::shower() {

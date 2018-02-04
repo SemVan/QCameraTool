@@ -32,6 +32,7 @@ private:
 
 signals:
     void sendImage(QImage &image);
+    void sendMat(cv::Mat image);
 
 private slots:
     void timeOutHandler();
